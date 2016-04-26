@@ -1,0 +1,10 @@
+{
+	"unused_css_root_folder": "",
+
+	"unused_css_ignore_folders": [
+		"C:\\xampp\\htdocs\\pv_projekt\\php\\libraries",
+		"C:\\xampp\\htdocs\\pv_projekt\\include\\libraries",
+		"C:\\xampp\\htdocs\\pv_projekt\\include\\bootstrap",
+		"C:\\xampp\\htdocs\\pv_projekt\\include\\simplecolor"
+	]
+}
