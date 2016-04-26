@@ -4,12 +4,6 @@ from os import listdir
 # add to 'Key Bindings - User' as shortcut:
 # { "keys": ["ctrl+f", "ctrl+u"], "command": "find_unused_css"}
 
-#add to 'Settings - User' to define folders, that souldnt be searched through:
-# 	"unused_css_ignore_folders": []
-
-#add to 'Settings - User' to define a folder that is handled as projects root folder:
-# 	"unused_css_root_folder": ""
-
 UU_IS_ACTIVE = False
 ALLOWED_EXTENSIONS = ["php", "html", "xhtml", "js"]
 
