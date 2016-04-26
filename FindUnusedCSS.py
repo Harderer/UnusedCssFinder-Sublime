@@ -33,7 +33,7 @@ class FindUnusedCssCommand(sublime_plugin.TextCommand):
 		settings = sublime.load_settings('Preferences.sublime-settings')
 		st_rootFolder = settings.get('unused_css_root_folder')
 		st_ignoreFolders = settings.get('unused_css_ignore_folders')
-		if st_rootFolder != None:
+		if st_rootFolder != None and st_rootFolder != "":
 			# use root path from settings if set
 			project_rootpath = st_rootFolder
 		if st_ignoreFolders != None:
