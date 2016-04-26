@@ -2,7 +2,7 @@ import sublime, sublime_plugin, os, re
 from os import listdir
 
 # add to 'Key Bindings - User' as shortcut:
-# { "keys": ["ctrl+f", "ctrl+u"], "command": "find_unused_css"}
+# { "keys": ["ctrl+u", "ctrl+f"], "command": "find_unused_css"}
 
 UU_IS_ACTIVE = False
 ALLOWED_EXTENSIONS = ["php", "html", "xhtml", "js"]
