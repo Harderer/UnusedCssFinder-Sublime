@@ -2,12 +2,12 @@ import sublime, sublime_plugin, os, re
 from os import listdir
 
 # add to 'Key Bindings - User' as shortcut:
-# { "keys": ["ctrl+u", "ctrl+f"], "command": "find_unused_css"}
+# { "keys": ["ctrl+u", "ctrl+f"], "command": "unused_css_finder"}
 
 UU_IS_ACTIVE = False
 ALLOWED_EXTENSIONS = ["php", "html", "xhtml", "js"]
 
-class FindUnusedCssCommand(sublime_plugin.TextCommand):
+class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 	
 	def run(self, edit):
 		sublime.set_timeout_async(self.async_search(edit), 0)
