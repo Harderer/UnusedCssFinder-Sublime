@@ -1,4 +1,4 @@
-# FindUnusedCss-Sublime
+# UnusedCssFinder-Sublime
 Sublime Text 3 plugin to find unused css names
 
 Author: Jannis Harder: jannisharder@hotmail.de
