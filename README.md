@@ -17,4 +17,4 @@ Go to `Package Settings` `->` `Key Bindings - User` and add:
 
 { "keys": ["ctrl+u", "ctrl+f"], "command": "unused_css_finder"}
 
-Then open any *.css fileand press `ctrl` `+` `u` `+` `f` to seachr for unused css ids and classes. The package sorts for occurences in your currently open project or in the files location if no project is open currently. All unused css names will be highlighted in the search and you can remove that highlighting with pressing the same key-shortcut again.
+Then open any *.css fileand press `ctrl` + `u` + `f` to search for unused css ids and classes. The package sorts for occurences in your currently open project or in the files location if no project is open currently. All unused css names will be highlighted in the search and you can remove that highlighting with pressing the same key-shortcut again.
