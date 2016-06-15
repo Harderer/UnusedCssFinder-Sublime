@@ -10,9 +10,9 @@ ALLOWED_EXTENSIONS = ["php", "html", "xhtml", "js"]
 class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 	
 	def run(self, edit):
-		sublime.set_timeout_async(self.async_search(edit), 0)
+		sublime.set_timeout_async(self.async_search(), 0)
 
-	def async_search(self, edit):
+	def async_search(self):
 		global UU_IS_ACTIVE
 		
 		view = self.view
@@ -35,7 +35,7 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 			ignoreFolders = st_ignoreFolders
 
 		if UU_IS_ACTIVE:
-			self.search_words(edit, filename, project_rootpath, ignoreFolders)
+			self.search_words(filename, project_rootpath, ignoreFolders)
 		else:
 			self.remove_highlighting(view)
 
@@ -48,7 +48,7 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 
 		view.settings().set('highlight_size', 0)
 
-	def search_words(self, edit, filename, project_rootpath, ignoreFolders):
+	def search_words(self, filename, project_rootpath, ignoreFolders):
 		# get all class and ids from file
 		fileContent = open(filename).read().lstrip().replace('\r', ' ').replace('\n', ' ')
 		fileContent = re.sub('{[^}]*}', '', fileContent)	# remove all content between brackets
