@@ -83,7 +83,7 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 	def search_in_folder(self, folderpath, trigger_filename, search_for, ignoreFolders):
 		appearanceFound = False
 		for f in listdir(folderpath):
-			filepath = folderpath+"\\"+f
+			filepath = os.path.join(folderpath, f)
 
 			if(os.path.isfile(filepath)):
 				appearanceFound = self.search_in_file(filepath, trigger_filename, search_for)
