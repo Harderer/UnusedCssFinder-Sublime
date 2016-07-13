@@ -1,54 +1,82 @@
-import sublime, sublime_plugin, os, re
+import sublime, sublime_plugin, os, re, string, time
 from os import listdir
 
 # add to 'Key Bindings - User' as shortcut:
 # { "keys": ["ctrl+u", "ctrl+f"], "command": "unused_css_finder"}
 
-UU_IS_ACTIVE = False
+UCF_IS_ACTIVE = {}
 ALLOWED_EXTENSIONS = ["php", "html", "xhtml", "js"]
 
 class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 	
 	def run(self, edit):
-		sublime.set_timeout_async(self.async_search(), 0)
+		sublime.set_timeout_async(self.async_search, 1)
+
+	def load_plugin_setting(self, setting_name):
+
+		# get plugin settings
+		settings_plugin = sublime.load_settings('UnusedCssFinder.sublime-settings')
+		setting_value_plugin = settings_plugin.get(setting_name)
+		if setting_value_plugin != None and setting_value_plugin != "":
+			return setting_value_plugin
+
+		settings = sublime.load_settings('applikationTemplate.sublime-settings')
+		setting_value = settings.get(setting_name)
+		if setting_value != None and setting_value != "":
+			return setting_value
+
+		return None
 
 	def async_search(self):
-		global UU_IS_ACTIVE
+		global UCF_IS_ACTIVE
 		
 		view = self.view
 		regions = [sublime.Region(0, view.size())]
 
 		filename = self.view.file_name()
 		ignoreFolders = []
+		scanOnlyFolders = False
 
 		project_rootpath = self.get_active_project_path(filename)
+		setting_identifier = re.sub('[\W_]', '', project_rootpath)
 
-		# get plugin settings
-		settings = sublime.load_settings('Preferences.sublime-settings')
-		st_rootFolder = settings.get('unused_css_root_folder')
-		st_ignoreFolders = settings.get('unused_css_ignore_folders')
+		# initialize project plugin status if necessary
+		if(project_rootpath not in UCF_IS_ACTIVE):
+			UCF_IS_ACTIVE[project_rootpath] = False
+
+		# get settings
+		st_rootFolder = self.load_plugin_setting('unused_css_root_folder')
+		st_ignoreFolders = self.load_plugin_setting('unused_css_ignore_folders')
+		st_scanOnlyFolders = self.load_plugin_setting('unused_css_scan_only_folders')
+
 		if st_rootFolder != None and st_rootFolder != "":
-			# use root path from settings if set
 			project_rootpath = st_rootFolder
-		if st_ignoreFolders != None:
-			# get list of folders to ignore from plugin settings
+		if st_ignoreFolders != None and st_ignoreFolders != "":
 			ignoreFolders = st_ignoreFolders
+		if st_scanOnlyFolders != None and st_scanOnlyFolders != "":
+			scanOnlyFolders = st_scanOnlyFolders
 
-		if UU_IS_ACTIVE:
-			self.search_words(filename, project_rootpath, ignoreFolders)
+
+		highlight_size = int(view.settings().get('highlight_size_'+setting_identifier, 0))
+		ufIsActive = False
+
+		if not UCF_IS_ACTIVE[project_rootpath] or highlight_size <= 0:
+			self.search_words(setting_identifier, filename, project_rootpath, ignoreFolders, scanOnlyFolders)
+			ufIsActive = True
 		else:
-			self.remove_highlighting(view)
+			tests = self.remove_highlighting(view, setting_identifier, highlight_size)
+			ufIsActive = False
 
-		UU_IS_ACTIVE = not UU_IS_ACTIVE
+		UCF_IS_ACTIVE[project_rootpath] = ufIsActive
 
-	def remove_highlighting(self, view):
-		size = view.settings().get('highlight_size', 0)
-		for i in range(size):
-			view.erase_regions('highlight_word_%d'%i)
+	def remove_highlighting(self, view, setting_identifier, highlight_size):
+		for i in range(highlight_size):
+			if len(view.get_regions('highlight_word_%d'%i)) > 0:
+				view.erase_regions('highlight_word_%d'%i)
 
-		view.settings().set('highlight_size', 0)
+		view.settings().set('highlight_size_'+setting_identifier, 0)
 
-	def search_words(self, filename, project_rootpath, ignoreFolders):
+	def search_words(self, setting_identifier, filename, project_rootpath, ignoreFolders, scanOnlyFolders):
 		# get all class and ids from file
 		fileContent = open(filename).read().lstrip().replace('\r', ' ').replace('\n', ' ')
 		fileContent = re.sub('{[^}]*}', '', fileContent)	# remove all content between brackets
@@ -57,6 +85,8 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 
 		unusedHits = 0
 		words = fileContent.split(" ")	# determine all words in file
+		word_length = len(words)
+		word_count = 0
 		for word in words:
 			word = word.strip(' \t\n\r')
 			if(word != ""):
@@ -68,30 +98,38 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 						classIdName = classIdName.strip(' \t\n\r')
 						if classIdName != "":
 							# search all files in folder and subfolders for given class or id name
-							appearanceFound = self.search_in_folder(project_rootpath, filename, classIdName, ignoreFolders)
+							appearanceFound = self.search_in_folder(project_rootpath, filename, classIdName, ignoreFolders, scanOnlyFolders)
 
-							# print name if appearance was not found
+							# highlight name if appearance was not found
 							if not appearanceFound:
 								regions = view.find_all(word, sublime.IGNORECASE)
 								view.add_regions('highlight_word_%d'%unusedHits, regions, 'invalid')
 
 								unusedHits+=1
+
+			word_count+=1
+			sublime.status_message("{:6.2f}%".format((word_count/word_length)*100)+": "+str(unusedHits)+" unused css names found")
 		
-		view.settings().set('highlight_size', unusedHits)
-		print(str(unusedHits)+" unused css names found")
+		view.settings().set('highlight_size_'+setting_identifier, unusedHits)
+		sublime.status_message("{:6.2f}%".format(100)+": "+str(unusedHits)+" unused css names found")
 
-	def search_in_folder(self, folderpath, trigger_filename, search_for, ignoreFolders):
+	def search_in_folder(self, folderpath, trigger_filename, search_for, ignoreFolders, scanOnlyFolders):
 		appearanceFound = False
-		for f in listdir(folderpath):
-			filepath = os.path.join(folderpath, f)
+		if scanOnlyFolders == False or len(scanOnlyFolders) == 0 or folderpath in scanOnlyFolders:
+			for f in listdir(folderpath):
+				filepath = os.path.join(folderpath, f)
 
-			if(os.path.isfile(filepath)):
-				appearanceFound = self.search_in_file(filepath, trigger_filename, search_for)
-			if(os.path.isdir(filepath) and filepath not in ignoreFolders):
-				appearanceFound = self.search_in_folder(filepath, trigger_filename, search_for, ignoreFolders)
+				if(os.path.isfile(filepath)):
+					appearanceFound = self.search_in_file(filepath, trigger_filename, search_for)
+				if(os.path.isdir(filepath) and filepath not in ignoreFolders):
+					if scanOnlyFolders != False and len(scanOnlyFolders) > 0 and scanOnlyFolders[folderpath] == True:
+						# scan only folder setting says to scan all subfolders aswell
+						appearanceFound = self.search_in_folder(filepath, trigger_filename, search_for, ignoreFolders, False)
+					else:
+						appearanceFound = self.search_in_folder(filepath, trigger_filename, search_for, ignoreFolders, scanOnlyFolders)
 
-			if appearanceFound:
-				return appearanceFound
+				if appearanceFound:
+					return appearanceFound
 
 		return appearanceFound
 
