@@ -2,11 +2,11 @@
 	"unused_css_root_folder": "",
 
 	"unused_css_ignore_folders": [
-		"C:\\your\\project",
+		//"C:\\your\\project",
 	],
 
 	"unused_css_scan_only_folders": {
 		//{foldername: scan_all_subfolders_in_here}
-		"C:\\scan\\only\\here": false
+		//"C:\\scan\\only\\here": false
 	}
 }
