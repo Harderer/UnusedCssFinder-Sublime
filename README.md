@@ -5,7 +5,7 @@ Sublime plugin to find unused css names
 
 Author: Jannis Harder: jannisharder@hotmail.de
 
-Last modified: 13 July 2016
+Last modified: 04 August 2016
 
 Plugin to find unused css declarations in a project. Searches for all id and class names inside current open project or file directory if no project is currently open. All css names that do not occur once in any other .php, .html, .xhtml or .js file is highlighted.
 
