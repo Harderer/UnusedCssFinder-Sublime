@@ -21,10 +21,14 @@ All unused css names will be highlighted in the search. To remove the highlighti
 ### Key Bindings
 
 Default Key Bindings for Mac:
+```
 { "keys": ["super+u", "super+f"], "command": "unused_css_finder"}
+```
 
 Default Key Bindings for Windows/Linux:
+```
 { "keys": ["ctrl+u", "ctrl+f"], "command": "unused_css_finder"}
+```
 
 ### Settings
 
