@@ -13,9 +13,9 @@ Might run slow on big projects, do not hesitate to send me improvement recommend
 
 ### Usage
 
-`Inline CSS`: Open the file and press `ctrl` + `u` + `f` to find css declarations without an occurence in this file.
+`Inline CSS`: Open the file and press `ctrl` + `u` + `f` to find css declarations without any occurence in the current file.
 
-`Extern CSS`: Open any *.css file and press `ctrl` + `u` + `f` to search for css declarations without an occurence in the current open project. If no project is active, the searc takes place at the css file location.
+`Extern CSS`: Open any *.css file and press `ctrl` + `u` + `f` to find css declarations without any occurence in the current project. If no project is active, the search takes place at the css file location.
 All unused css names will be highlighted in the search. To remove the highlighting with press the same key-shortcut again.
 
 ### Key Bindings
