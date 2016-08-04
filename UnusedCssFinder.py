@@ -6,7 +6,8 @@ ALLOWED_EXTENSIONS = ["php", "html", "xhtml", "js"]
 
 class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 	
-	def run(self, edit):
+	def run(self, edit, **args):
+		self.debug = args['debug'] if 'debug' in args else False
 		sublime.set_timeout_async(self.async_search, 1)
 
 	def load_plugin_setting(self, setting_name):
@@ -107,15 +108,24 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 					for classIdName in classIdNameSplitted:
 						classIdName = classIdName.strip(' \t\n\r')
 						if classIdName != "":
+
+							if(self.debug):
+								print("search for '"+classIdName+"' in")
 							# search all files in folder and subfolders for given class or id name
 							appearanceFound = self.search_in_folder(project_rootpath, filename, classIdName, ignoreFolders, scanOnlyFolders, css_inside_file)
 
 							# highlight name if appearance was not found
 							if not appearanceFound:
+								if(self.debug):
+									print(">> no match found")
+
 								regions = self.view.find_all(word, sublime.IGNORECASE)
 								self.view.add_regions('highlight_word_%d'%unusedHits, regions, 'invalid')
 
 								unusedHits+=1
+
+							if(self.debug):
+								print("-----------")
 
 			word_count+=1
 			sublime.status_message("{:6.2f}%".format((word_count/word_length)*100)+": "+str(unusedHits)+" unused css names found")
@@ -138,6 +148,8 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 						appearanceFound = self.search_in_folder(filepath, trigger_filename, search_for, ignoreFolders, scanOnlyFolders, css_inside_file)
 
 				if appearanceFound:
+					if(self.debug):
+						print(">> match")
 					return appearanceFound
 
 		return appearanceFound
@@ -147,6 +159,8 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 		if(extension in ALLOWED_EXTENSIONS):
 			if (filepath != trigger_filename and not css_inside_file) or (filepath == trigger_filename and css_inside_file):
 				try:
+					if(self.debug):
+						print(">> "+filepath)
 					fileContent = open(filepath).read()
 					if(css_inside_file):
 						fileContent = re.sub(re.compile('<style[^>]*>.*?</style>', re.DOTALL), '', fileContent)
