@@ -28,5 +28,5 @@ Default Key Bindings for Windows/Linux:
 
 ### Settings
 
-`unused_css_ignore_folders` - any folder added here will be ignored in the search for occurences of the css names
-`unused_css_scan_only_folders` - if you want to search explicitly in only some folder, define them here and a search will only happen in a folder, it its name is in this list. **Important**: Add them as object with the folders being the keys and a boolean as value. The boolean defines, if all subfolders in this folder are allowed to be included in the search.
+`unused_css_ignore_folders`: any folder added here will be ignored in the search for occurences of the css names
+`unused_css_scan_only_folders`: if you want to search explicitly in only some folder, define them here and a search will only happen in a folder, it its name is in this list. **Important**: Add them as object with the folders being the keys and a boolean as value. The boolean defines, if all subfolders in this folder are allowed to be included in the search.
