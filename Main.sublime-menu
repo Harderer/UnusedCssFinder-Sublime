@@ -1,0 +1,36 @@
+[
+    {
+        "caption": "Preferences",
+        "children": [
+            {
+                "caption": "Package Settings",
+                "children": [
+                    {
+                        "caption": "UnusedCssFinder",
+                        "children": [
+                            {
+                                "args": {
+                                    "file": "${packages}/UnusedCssFinder/UnusedCssFinder.sublime-settings"
+                                },
+                                "caption": "Settings \u2013 Default",
+                                "command": "open_file"
+                            },
+                            {
+                                "args": {
+                                    "file": "${packages}/User/UnusedCssFinder.sublime-settings"
+                                },
+                                "caption": "Settings \u2013 User",
+                                "command": "open_file"
+                            }
+                        ],
+                        "id": "unusedcssfinder"
+                    }
+                ],
+                "id": "package-settings",
+                "mnemonic": "P"
+            }
+        ],
+        "id": "preferences",
+        "mnemonic": "n"
+    }
+]
