@@ -119,7 +119,7 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 								if(self.debug):
 									print(">> no match found")
 
-								regions = self.view.find_all(word, sublime.IGNORECASE)
+								regions = self.view.find_all('(?<=\W)('+word+')(?=\W)', sublime.IGNORECASE)
 								self.view.add_regions('highlight_word_%d'%unusedHits, regions, 'invalid')
 
 								unusedHits+=1
@@ -164,7 +164,8 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 					fileContent = open(filepath).read()
 					if(css_inside_file):
 						fileContent = re.sub(re.compile('<style[^>]*>.*?</style>', re.DOTALL), '', fileContent)
-					return (search_for in fileContent)
+
+					return (re.search('(?<=\W)('+search_for+')(?=\W)', fileContent) is not None)
 				except UnicodeDecodeError:
 					return False
 			return False
