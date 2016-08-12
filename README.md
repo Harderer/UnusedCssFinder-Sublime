@@ -60,6 +60,7 @@ v.1.3.0
 - switched default behaviour of plugin. Instead of highlighting every unused selector, they will be selected via cursor, to be able to remove them with one backspace press
 - added 'unused_css_highlight_selectors' setting: switch to old behaviour, that unused selectors will be highlighted instead of selected via cursor
 - added plugin to sublime context menu on right click to be able to configure some settings and also run the command without shortcut
+- most of these changes are based on the ideas from NoxNoctis2, thanks for that
 
 v.1.2.2
 
