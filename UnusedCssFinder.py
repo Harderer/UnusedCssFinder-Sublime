@@ -175,7 +175,7 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 		# go through all declarations and highlight unused ones, select them via cursor or remove them
 		unused_css_regions = []
 
-		bracket_declarations = re.finditer(re.compile('(?P<declaration>[^{}]*(?={))(?P<css>[^}]*(?=}))', re.DOTALL), self.file_content)
+		bracket_declarations = re.finditer(re.compile('(?P<declaration>[^{}>]*(?={))(?P<css>[^}]*(?=}))', re.DOTALL), self.file_content)
 		for match in bracket_declarations:
 			match_string = self.view.substr(sublime.Region(match.start('declaration'), match.end('declaration')))
 
