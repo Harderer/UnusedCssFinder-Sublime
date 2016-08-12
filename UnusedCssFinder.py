@@ -170,13 +170,11 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 									if(self.debug):
 										print(">> no match found")
 
-									# regions = self.view.find_all('(?<!\w)('+word+')(?!\w).*(?<=\{).*(?<=\})', sublime.IGNORECASE)
-									matches = re.finditer(re.compile('(?<!\w)('+word+')(?!\w)[^{]*{[^}]*}', re.DOTALL), self.file_content)
-
 									if self.hightlightUnusedSelectors:
 										self.view.add_regions('highlight_word_%d'%unusedHits, self.view.find_all('(?<!\w)('+word+')(?!\w)', sublime.IGNORECASE), 'invalid')
 									
 									if not self.hightlightUnusedSelectors or self.autoDelete:
+										matches = re.finditer(re.compile('[^}]*(?<!\w)('+word+')(?!\w)[^{]*{[^}]*}', re.DOTALL), self.file_content)
 										for match in matches:
 											region = sublime.Region(match.start(0), match.end(0))
 											self.view.sel().add(region)
