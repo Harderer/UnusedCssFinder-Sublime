@@ -21,12 +21,15 @@ Might run slow on big projects, do not hesitate to send me improvement recommend
 
 ### Default Key Bindings
 
-- for Mac:
+for Mac:
+```
+{ "keys": ["super+u", "super+f"], "command": "unused_css_finder"}
+```
 
-`{ "keys": ["super+u", "super+f"], "command": "unused_css_finder"}`
-- for Windows/Linux:
-
-`{ "keys": ["ctrl+u", "ctrl+f"], "command": "unused_css_finder"}`
+for Windows/Linux:
+```
+{ "keys": ["ctrl+u", "ctrl+f"], "command": "unused_css_finder"}
+```
 
 ### Settings
 
