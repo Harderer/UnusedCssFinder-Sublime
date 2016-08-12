@@ -2,11 +2,18 @@
 	"unused_css_root_folder": "",
 
 	"unused_css_ignore_folders": [
-		//"C:\\your\\project",
+		// "C:\\your\\project",
 	],
 
 	"unused_css_scan_only_folders": {
-		//{foldername: scan_all_subfolders_in_here}
-		//"C:\\scan\\only\\here": false
-	}
+		// {foldername: scan_all_subfolders_in_here}
+		// "C:\\scan\\only\\here": false
+	},
+	"unused_css_ignore_selectors": [
+		// "#example_id",
+		// ".example_class",
+		// "example_selector"
+	],
+	"unused_css_highlight_selectors": false,
+	"unused_css_delete_on_search": false
 }
