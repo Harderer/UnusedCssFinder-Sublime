@@ -19,17 +19,14 @@ Might run slow on big projects, do not hesitate to send me improvement recommend
 
 `Extern CSS`: Open any *.css file and press `ctrl` + `u` + `f` to find css declarations without any occurence in the current project. If no project is active, the search takes place at the css file location.
 
-### Key Bindings
+### Default Key Bindings
 
-Default Key Bindings for Mac:
-```
-{ "keys": ["super+u", "super+f"], "command": "unused_css_finder"}
-```
+- for Mac:
 
-Default Key Bindings for Windows/Linux:
-```
-{ "keys": ["ctrl+u", "ctrl+f"], "command": "unused_css_finder"}
-```
+`{ "keys": ["super+u", "super+f"], "command": "unused_css_finder"}`
+- for Windows/Linux:
+
+`{ "keys": ["ctrl+u", "ctrl+f"], "command": "unused_css_finder"}`
 
 ### Settings
 
