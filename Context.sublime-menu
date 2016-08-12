@@ -1,0 +1,49 @@
+[
+    {
+        "id": "unusedcssfinder",
+        "caption": "Unused CSS Finder",
+        "children":
+        [
+            {
+                "caption": "Find Unused Selectors",
+                "command": "unused_css_finder"
+            },
+            {
+                "caption": "Highlight Results",
+                "children":
+                [
+                    {
+                        "caption": "True",
+                        "command": "check_highlight_selectors"
+                    },
+                    {
+                        "caption": "False",
+                        "command": "uncheck_highlight_selectors"
+                    }
+                ]
+            },
+            {
+                "caption": "Delete After Search",
+                "children":
+                [
+                    {
+                        "caption": "True",
+                        "command": "check_auto_delete"
+                    },
+                    {
+                        "caption": "False",
+                        "command": "uncheck_auto_delete"
+                    }
+                ]
+            },
+            {
+                "caption": "-"
+            },
+            {
+                "caption": "Add Selector To Ignore List",
+                "command": "add_to_ignore_list"
+            }
+        ]
+        
+    }
+]
