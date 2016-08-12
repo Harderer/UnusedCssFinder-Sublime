@@ -165,24 +165,6 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 									selectorName = word[0:1]+classIdName
 									unused_selectors.append(selectorName)
 
-									# if self.hightlightUnusedSelectors:
-									# 	# '((?<=})|(?<!\S))[^{]*': to ensure, that the occurence is preceeded by a } or only whitespace and not by a {, to make sure it is not inside brackets
-									# 	# '(?<!\w)' and '(?!\w)' to ensure the occurence is not part of a substring
-									# 	selector_pattern = '((?<=})|(?<!\S))[^{]*(?<!\w)(?P<occurence>'+selectorName+')(?!\w)'
-									# 	matches = re.finditer(re.compile(selector_pattern, re.DOTALL), self.file_content)
-									# 	regions = []
-									# 	for match in matches:
-									# 		regions.append(sublime.Region(match.start('occurence'), match.end('occurence')))
-									# 	self.view.add_regions('highlight_word_%d'%unusedHits, regions, 'invalid')
-									
-									# if not self.hightlightUnusedSelectors or self.autoDelete:
-									# 	matches = re.finditer(re.compile('((?<=}))[^{},]*(?<!\w)'+selectorName+'(?!\w)[^,}]*(,| |})*', re.DOTALL), self.file_content)	# [^{,]*{[^}]*}
-									# 	for match in matches:
-									# 		region = sublime.Region(match.start(0)+1, match.end(0))
-									# 		self.view.sel().add(region)
-
-									# unusedHits+=1
-
 								if(self.debug):
 									print("-----------")
 
@@ -214,27 +196,26 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 						selector = [selector_match.start(0)-1, selector_match.end(0), declaration[selector_match.start(0)-1:selector_match.end(0)]]
 
 					# get last css id or class in selector
-					if selector[0] != selector[1]:
-						if selector[2] in unused_selectors:
-							# id or class is in list of unused css selectors, add selection to declaration part
-							unused_css_regions.append(sublime.Region(match.start('declaration')+selector[0]+char_count, match.start('declaration')+selector[1]+char_count))
-							unused_declaration_count+=1
+					if selector[0] != selector[1] and selector[2] in unused_selectors:
+						# id or class is in list of unused css selectors, add selection to declaration part
+						unused_css_regions.append(sublime.Region(match.start('declaration')+selector[0]+char_count, match.start('declaration')+selector[1]+char_count))
+						unused_declaration_count+=1
 
-							if not self.hightlightUnusedSelectors or self.autoDelete:
-								region_from = match.start('declaration')+char_count
-								region_to = match.start('declaration')+selector[1]+char_count
-								# also add the correct comma to selection
-								if char_count == 0 and len(declarations) > 1:
-									region_to += 1
-								elif char_count > 0:
-									if declaration_before_unused:
-										 region_to += 1
-									else:
-										 region_from -= 1
+						if not self.hightlightUnusedSelectors or self.autoDelete:
+							region_from = match.start('declaration')+char_count
+							region_to = match.start('declaration')+selector[1]+char_count
+							# also add the correct comma to selection
+							if char_count == 0 and len(declarations) > 1:
+								region_to += 1
+							elif char_count > 0:
+								if declaration_before_unused:
+									 region_to += 1
+								else:
+									 region_from -= 1
 
-								# add unused declaration to selection
-								self.view.sel().add(sublime.Region(region_from, region_to))
-								declaration_unused = True
+							# add unused declaration to selection
+							self.view.sel().add(sublime.Region(region_from, region_to))
+							declaration_unused = True
 
 					char_count += len(declaration)+1
 					declaration_before_unused = declaration_unused
