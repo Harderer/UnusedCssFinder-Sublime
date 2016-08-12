@@ -33,19 +33,16 @@ Default Key Bindings for Windows/Linux:
 
 ### Settings
 
-`unused_css_root_folder`: define a projects root location if ti deviates from the sublime projects root location.
-
-`unused_css_ignore_folders`: any folder added here will be ignored in the search for occurences of the css names.
-
-`unused_css_scan_only_folders`: if you want to search explicitly in only some folder, define them here and a search will only happen in a folder, it its name is in this list. **Important**: Add them as object with the folders being the keys and a boolean as value. The boolean defines, if all subfolders in this folder are allowed to be included in the search.
-
-`unused_css_ignore_selectors`*: define any selectors, that should be ignored in the search. Can be defined with class or id selcetor or as plain selector name. (e.g. "#example", ".example" or "example")
-
-`unused_css_highlight_selectors`*: if true, the found selectors won't be selected via cursor but highlighted. The highlighting can be removed by running the same command again.
+\begin
+- `unused_css_root_folder`: define a projects root location if ti deviates from the sublime projects root location.
+- `unused_css_ignore_folders`: any folder added here will be ignored in the search for occurences of the css names.
+- `unused_css_scan_only_folders`: if you want to search explicitly in only some folder, define them here and a search will only happen in a folder, it its name is in this list. **Important**: Add them as object with the folders being the keys and a boolean as value. The boolean defines, if all subfolders in this folder are allowed to be included in the search.
+- `unused_css_ignore_selectors`*: define any selectors, that should be ignored in the search. Can be defined with class or id selcetor or as plain selector name. (e.g. "#example", ".example" or "example")
+- `unused_css_highlight_selectors`*: if true, the found selectors won't be selected via cursor but highlighted. The highlighting can be removed by running the same command again.
 
 ![Highlighting](http://i.giphy.com/3oz8xQX86kktBcYDZu.gif)
 
-`unused_css_delete_on_search`*: deletes all unused selectors after search if true. Be sure to add composited html classes and ids to the ignored selectors list. e.g. if you have a class declaration like "test_"+true_or_false, add "test_false" and "test_true" to ignore - they would be deleted otherwise.
+- `unused_css_delete_on_search`*: deletes all unused selectors after search if true. Be sure to add composited html classes and ids to the ignored selectors list. e.g. if you have a class declaration like "test_"+true_or_false, add "test_false" and "test_true" to ignore - they would be deleted otherwise.
 
 ![AutoDelete](http://i.giphy.com/3oz8xAQ1DoHkfcznqg.gif)
 
