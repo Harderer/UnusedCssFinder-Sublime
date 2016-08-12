@@ -83,12 +83,11 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 		if st_hightlightUnusedSelectors != None:
 			self.hightlightUnusedSelectors = st_hightlightUnusedSelectors
 
-		highlight_size = int(self.view.settings().get('highlight_size_'+setting_identifier, 0))
 		ufIsActive = False
 
-		self.remove_highlighting(self.view, setting_identifier, highlight_size)
+		self.view.erase_regions('unused_css_declarations')
 
-		if not UCF_IS_ACTIVE[self.project_rootpath] or highlight_size <= 0 or self.hightlightUnusedSelectors is False:
+		if not UCF_IS_ACTIVE[self.project_rootpath] or self.hightlightUnusedSelectors is False:
 			self.view.sel().clear()
 
 			self.search_areas(setting_identifier, filename)
@@ -106,13 +105,6 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 		####
 
 		UCF_IS_ACTIVE[self.project_rootpath] = ufIsActive
-
-	def remove_highlighting(self, view, setting_identifier, highlight_size):
-		for i in range(highlight_size):
-			if len(view.get_regions('highlight_word_%d'%i)) > 0:
-				view.erase_regions('highlight_word_%d'%i)
-
-		view.settings().set('highlight_size_'+setting_identifier, 0)
 
 	def search_areas(self, setting_identifier, filename):
 		# get all class and ids from file
@@ -139,12 +131,12 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 
 			unusedHits += self.search_words(setting_identifier, filename, words, word_count, word_length, unusedHits, True)
 			
-		self.view.settings().set('highlight_size_'+setting_identifier, unusedHits)
 		sublime.status_message("{:6.2f}%".format(100)+": "+str(unusedHits)+" unused css names found")
 
 	def search_words(self, setting_identifier, filename, words, word_count, word_length, unusedHits, css_inside_file):
 
 		searched_selectors = []
+		unused_selectors = []
 		
 		for word in words:
 			word = word.strip(' \t\n\r')
@@ -170,24 +162,94 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 									if(self.debug):
 										print(">> no match found")
 
-									if self.hightlightUnusedSelectors:
-										self.view.add_regions('highlight_word_%d'%unusedHits, self.view.find_all('(?<!\w)('+word+')(?!\w)', sublime.IGNORECASE), 'invalid')
-									
-									if not self.hightlightUnusedSelectors or self.autoDelete:
-										matches = re.finditer(re.compile('[^}]*(?<!\w)('+word+')(?!\w)[^{]*{[^}]*}', re.DOTALL), self.file_content)
-										for match in matches:
-											region = sublime.Region(match.start(0), match.end(0))
-											self.view.sel().add(region)
+									selectorName = word[0:1]+classIdName
+									unused_selectors.append(selectorName)
 
-									unusedHits+=1
+									# if self.hightlightUnusedSelectors:
+									# 	# '((?<=})|(?<!\S))[^{]*': to ensure, that the occurence is preceeded by a } or only whitespace and not by a {, to make sure it is not inside brackets
+									# 	# '(?<!\w)' and '(?!\w)' to ensure the occurence is not part of a substring
+									# 	selector_pattern = '((?<=})|(?<!\S))[^{]*(?<!\w)(?P<occurence>'+selectorName+')(?!\w)'
+									# 	matches = re.finditer(re.compile(selector_pattern, re.DOTALL), self.file_content)
+									# 	regions = []
+									# 	for match in matches:
+									# 		regions.append(sublime.Region(match.start('occurence'), match.end('occurence')))
+									# 	self.view.add_regions('highlight_word_%d'%unusedHits, regions, 'invalid')
+									
+									# if not self.hightlightUnusedSelectors or self.autoDelete:
+									# 	matches = re.finditer(re.compile('((?<=}))[^{},]*(?<!\w)'+selectorName+'(?!\w)[^,}]*(,| |})*', re.DOTALL), self.file_content)	# [^{,]*{[^}]*}
+									# 	for match in matches:
+									# 		region = sublime.Region(match.start(0)+1, match.end(0))
+									# 		self.view.sel().add(region)
+
+									# unusedHits+=1
 
 								if(self.debug):
 									print("-----------")
 
 			word_count+=1
-			sublime.status_message("{:6.2f}%".format((word_count/word_length)*100)+": "+str(unusedHits)+" unused css names found")
+			sublime.status_message("{:6.2f}%".format((word_count/word_length)*100)+": "+str(len(unused_selectors))+" unused css names found")
 
-		return unusedHits
+
+		# go through all declarations and highlight unused ones, select them via cursor or remove them
+		unused_css_regions = []
+
+		bracket_declarations = re.finditer(re.compile('(?P<declaration>[^{}]*(?={))(?P<css>[^}]*(?=}))', re.DOTALL), self.file_content)
+		for match in bracket_declarations:
+			match_string = self.view.substr(sublime.Region(match.start('declaration'), match.end('declaration')))
+
+			# get all declarations
+			if match_string != "":
+				declarations = match_string.split(",")
+				char_count = 0
+				unused_declaration_count = 0
+
+				declaration_before_unused = False
+
+				# go through each single declaration in potential declaration block
+				for declaration in declarations:
+					declaration_unused = False
+					selectors = re.finditer(re.compile('(?<=\.|#)[\w-]*', re.DOTALL), declaration)
+					selector = [0, 0]
+					for selector_match in selectors:
+						selector = [selector_match.start(0)-1, selector_match.end(0), declaration[selector_match.start(0)-1:selector_match.end(0)]]
+
+					# get last css id or class in selector
+					if selector[0] != selector[1]:
+						if selector[2] in unused_selectors:
+							# id or class is in list of unused css selectors, add selection to declaration part
+							unused_css_regions.append(sublime.Region(match.start('declaration')+selector[0]+char_count, match.start('declaration')+selector[1]+char_count))
+							unused_declaration_count+=1
+
+							if not self.hightlightUnusedSelectors or self.autoDelete:
+								region_from = match.start('declaration')+char_count
+								region_to = match.start('declaration')+selector[1]+char_count
+								# also add the correct comma to selection
+								if char_count == 0 and len(declarations) > 1:
+									region_to += 1
+								elif char_count > 0:
+									if declaration_before_unused:
+										 region_to += 1
+									else:
+										 region_from -= 1
+
+								# add unused declaration to selection
+								self.view.sel().add(sublime.Region(region_from, region_to))
+								declaration_unused = True
+
+					char_count += len(declaration)+1
+					declaration_before_unused = declaration_unused
+
+				# check if all declarations of a css assignment are unused, to select the assignments aswell
+				if unused_declaration_count > 0:
+					if not self.hightlightUnusedSelectors or self.autoDelete:
+						if unused_declaration_count >= len(declarations):
+							self.view.sel().add(sublime.Region(match.start('declaration'), match.end('css')+1))
+
+		# highlight unused selectors if setted
+		if self.hightlightUnusedSelectors:
+			self.view.add_regions('unused_css_declarations', unused_css_regions, 'invalid')
+
+		return len(unused_selectors)
 
 	def search_in_folder(self, folderpath, trigger_filename, search_for, css_inside_file):
 		appearanceFound = False
