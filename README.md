@@ -9,6 +9,8 @@ Last modified: 12 August 2016
 
 Plugin to find unused css declarations in a project. Searches for all id and class names inside current open project or file directory if no project is currently open. All css names that do not occur once in any other .php, .html, .xhtml or .js file will be selected.
 
+![Default](http://i.giphy.com/l3vR2PVN2FHWrhWow.gif)
+
 Might run slow on big projects, do not hesitate to send me improvement recommendations as this is my first sublime plugin.
 
 ### Usage
@@ -41,10 +43,13 @@ Default Key Bindings for Windows/Linux:
 
 `unused_css_highlight_selectors`*: if true, the found selectors won't be selected via cursor but highlighted. The highlighting can be removed by running the same command again.
 
+![Highlighting](http://i.giphy.com/3oz8xQX86kktBcYDZu.gif)
+
 `unused_css_delete_on_search`*: deletes all unused selectors after search if true. Be sure to add composited html classes and ids to the ignored selectors list. e.g. if you have a class declaration like "test_"+true_or_false, add "test_false" and "test_true" to ignore - they would be deleted otherwise.
 
-*All these settings can be configured over the context menu on right click also. Clicking "Add To Selectors Ignore List" will add all selected elements to the list.
+![AutoDelete](http://i.giphy.com/3oz8xAQ1DoHkfcznqg.gif)
 
+*All these settings can be configured over the context menu on right click also. Clicking "Add To Selectors Ignore List" will add all selected elements to the list.
 
 ### Project Settings
 
