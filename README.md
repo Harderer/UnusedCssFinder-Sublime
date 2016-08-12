@@ -53,6 +53,10 @@ You can also define all the above settings in an individual "unused_css.cfg" fil
 
 ### Change Log
 
+v.1.3.1
+
+- fixed a bug for inline css
+
 v.1.3.0
 
 - settings can now be configured over a project specific file "unused_css.cfg" that has to be located in a projects root path
