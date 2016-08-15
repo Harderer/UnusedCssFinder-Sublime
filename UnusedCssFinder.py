@@ -174,10 +174,11 @@ class UnusedCssFinderCommand(sublime_plugin.TextCommand):
 
 					# <css_name>: to get the css selector name
 					# <css_addition>: to include all possible css selector additions to the selection:
-					selectors = re.finditer(re.compile('(?P<css_name>(?<=\.|#)[\w-]*)(?P<css_addition>[^,{]*)', re.DOTALL), declaration)
+					selectors = re.finditer(re.compile('(?P<css_name>(?<=\.|#)[\w-]*)(?P<css_addition>[^,{.#]*)', re.DOTALL), declaration)
 					selector = [0, 0]
 					for selector_match in selectors:
 						selector = [selector_match.start('css_name')-1, selector_match.end('css_name'), selector_match.end('css_addition'), declaration[selector_match.start('css_name')-1:selector_match.end('css_name')]]
+						print(selector[3])
 
 					# get last css id or class in selector
 					if selector[0] != selector[1] and selector[3] in unused_selectors:
