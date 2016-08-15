@@ -53,6 +53,11 @@ You can also define all the above settings in an individual "unused_css.cfg" fil
 
 ### Change Log
 
+v.1.3.2
+
+- Optimized the way, unused css declarations are selected.
+- Clean selection/deletion in multiple declarations
+
 v.1.3.1
 
 - fixed a bug for inline css
