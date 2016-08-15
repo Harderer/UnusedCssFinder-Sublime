@@ -95,3 +95,7 @@ v1.1.0
 
 - Added settings to define folders, in which the search takes place
 - Fixed a bug to truely search asynchronously
+
+### License
+
+This work is licensed under the [The MIT License](LICENSE).
